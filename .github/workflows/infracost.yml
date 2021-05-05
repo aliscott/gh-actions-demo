@@ -15,12 +15,18 @@ jobs:
     steps:
     - name: Check out repository
       uses: actions/checkout@v2
+    - name: "Env"
+      run: env
+    - name: "GitHub event path"
+      run: cat $GITHUB_EVENT_PATH
+    - name: "Env"
+      run: echo "${{ github.event.pull_request.number }}"
     - name: Run infracost diff
-      uses: infracost/infracost-gh-action@master
+      uses: infracost/infracost-gh-action@test
       env:
         INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         entrypoint: /scripts/ci/diff.sh # Do not change
-        tfdir: terraform
+        path: terraform
         usage_file: infracost-usage.yml
