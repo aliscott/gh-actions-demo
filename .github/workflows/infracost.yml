@@ -1,5 +1,5 @@
 on:
-  push:
+  pull_request:
     # This action runs on PRs, so no need to rerun it on master/main
     branches-ignore:
       - master
@@ -15,6 +15,12 @@ jobs:
     steps:
     - name: Check out repository
       uses: actions/checkout@v2
+    - name: "Env"
+      run: env
+    - name: "GitHub event path"
+      run: cat $GITHUB_EVENT_PATH
+    - name: "Env"
+      run: echo "${{ github.event.pull_request.number }}"
     - name: Run infracost diff
       uses: infracost/infracost-gh-action@master
       env:
@@ -22,5 +28,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         entrypoint: /scripts/ci/diff.sh # Do not change
-        tfdir: terraform
+        path: terraform
         usage_file: infracost-usage.yml
